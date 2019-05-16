@@ -8,8 +8,8 @@ class Category
 
   public static function getById($pdo, $id)
   {
-    $q = $pdo->prepare('SELECT * FROM ' . self::TABLE_NAME . ' WHERE id = :id');
-    $q->execute([":id" => $id]);
+    $q = $pdo->prepare('SELECT * FROM ' . self::TABLE_NAME . ' WHERE id = ?');
+    $q->execute([$id]);
     return $q->fetch();
   }
 }
