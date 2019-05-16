@@ -6,53 +6,50 @@ $request_url = $_SERVER['REQUEST_URI'];
 $path = parse_url($request_url, PHP_URL_PATH);
 $query = parse_url($request_url, PHP_URL_QUERY);
 
-$url_composants = explode("/",$path,4);
-if(isset($url_composants[3])){
+$url_composants = explode("/", $path, 4);
+if (isset($url_composants[3])) {
   $argument = $url_composants[3];
-}else{
+} else {
   $argument = null;
 }
 
-if(isset($url_composants[1])){
-  if(strlen($url_composants[1]) ==0){
-    $controller_name = "index"; 
-  }else{
-    $controller_name = $url_composants[1];    
+if (isset($url_composants[1])) {
+  if (strlen($url_composants[1]) == 0) {
+    $controller_name = "index";
+  } else {
+    $controller_name = $url_composants[1];
   }
-  
-}else{
-  $controller_name = "index";  
+} else {
+  $controller_name = "index";
 }
-if(isset($url_composants[2])){
+if (isset($url_composants[2])) {
   $action_name = $url_composants[2];
-}else{
+} else {
   $action_name = "index";
 }
 
-try{
+try {
 
-  list($controller, $action) = ThirtySix\Router::load($action_name,$controller_name);
 
-}catch(ThirtySix\Exception\ControllerNotFound $e){
+
+  list($controller, $action) = ThirtySix\Router::load($controller_name, $action_name);
+} catch (ThirtySix\Exception\ControllerNotFound $e) {
   $controller = new ErrorController();
   $action = "e404";
   $argument = $e;
-
-}catch(ThirtySix\Exception\ActionNotFound $e){
+} catch (ThirtySix\Exception\ActionNotFound $e) {
   $controller = new Controller\ErrorController();
   $action = "e404";
   $argument = $e;
-
-}catch(Exception $e){
+} catch (Exception $e) {
   $controller = new Controller\ErrorController();
   $action = "e500";
   $argument = $e;
-
 }
 
 chdir("../src/views/");
 $result = $controller->$action($argument);
 
-if(is_string($result)){
+if (is_string($result)) {
   echo $result;
 }
